@@ -264,6 +264,7 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1){
   # p-values based on BOOTSTAP (smooth bootstrap of residuals. Statistica Sinica 2007, Scand. J. Stat. 2015)
   if (bootstrap == TRUE){
 
+    Tn1.boot <- rep(0., B)
     Tn2.boot <- rep(0., B)
 
     a1smooth <- 0.
