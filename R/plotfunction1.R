@@ -27,4 +27,4 @@ plot.function1 <-  function(x, ...) {
 
 }
 
-plot(res)
+# plot(res)
