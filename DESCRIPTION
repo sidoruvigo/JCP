@@ -1,0 +1,14 @@
+Package: JCP
+Title: What the Package Does (one line, title case)
+Version: 1.0
+Authors@R: c(
+  person("Juan Carlos", "Pardo Fernández", email = "jacobo@uvigo.es", role = "aut"),
+  person("José Carlos", "Soage González", email = "jsoage@uvigo.es", role = "cre"))
+Maintainer: José Carlos Soage González <jsoage@uvigo.es>
+Description: What the package does (one paragraph).
+Depends: R (>= 3.5.0)
+License: GPL-2 
+Imports: np
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
