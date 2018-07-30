@@ -144,13 +144,13 @@ comp2regr.onesided <- function(x1, x2, y1, y2, p = function(x){0.5}, w1 = functi
 # Example
 #===============================================================================
 
-n1 <- 100
-n2 <- 200
-x1 <- runif(n1)
-y1 <- x1 + 0.25 * rnorm(n1)
-x2 <- runif(n2)
-y2 <- 0.2 + x2 + 0.5 * rnorm(n2)
-
-comp2regr.onesided(x1, x2, y1, y2)
+# n1 <- 100
+# n2 <- 200
+# x1 <- runif(n1)
+# y1 <- x1 + 0.25 * rnorm(n1)
+# x2 <- runif(n2)
+# y2 <- 0.2 + x2 + 0.5 * rnorm(n2)
+#
+# comp2regr.onesided(x1, x2, y1, y2)
 
 
