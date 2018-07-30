@@ -9,15 +9,20 @@ comp2regr.onesided <- function(x1, x2, y1, y2, p = function(x){0.5}, w1 = functi
     (0.75 * (1 - u ^ 2)) * (u < 1) * (u > -1)
   }
 
-  # Kernel density estimator. This function calculates the kernel density estimator on the collection of "npoints" points "points" based on the "ndata" observations xdata and the bandwidth "h".
+  # Kernel density estimator. This function calculates the kernel density
+  # estimator on the collection of "npoints" points "points" based on the "ndata"
+  # observations xdata and the bandwidth "h".
   kerneldensity <- function(ndata, data, points, h) {
     rowSums(kernel(outer(points, data, "-") / h)) / (ndata * h)
   }
 
-  # Nadaraya-Watson estimator. This function calculates the N-W estimator on the collection of "npoints" points "points" based on the "ndata" observations (xdata,ydata) and the bandwidth "h".
+  # Nadaraya-Watson estimator. This function calculates the N-W estimator on the
+  # collection of "npoints" points "points" based on the "ndata" observations
+  # (xdata,ydata) and the bandwidth "h".
   nadarayawatson <- function(ndata, xdata, ydata, npoints, points, h) {
-    as.vector({matk <- kernel((points %*% t(rep(1, ndata)) - t(xdata %*% t(rep(1, npoints)))) / h)
-    (matk %*% ydata) / (matk %*% rep(1, ndata))
+    as.vector({
+      matk <- kernel((points %*% t(rep(1, ndata)) - t(xdata %*% t(rep(1, npoints)))) / h)
+      (matk %*% ydata) / (matk %*% rep(1, ndata))
     })
   }
 
@@ -59,17 +64,15 @@ comp2regr.onesided <- function(x1, x2, y1, y2, p = function(x){0.5}, w1 = functi
       }
     }
     crossvalue <- crossvalue / n
-    #plot(h,crossvalue)
+    #plot(h, crossvalue)
     h.crossvalidation.ll <- h[which.min(crossvalue)]
   }
-
 
 
   cat("Call:", "\n")
   print(match.call())
   DNAME <- deparse(substitute(c(x1, x2, y1, y2)))
   METHOD <- "A simple test for comparing regression curves versus one-sided alternatives"
-  # DNAME <- "X"
   n1 <- length(x1)
   n2 <- length(x2)
   n <- n1 + n2
@@ -105,8 +108,8 @@ comp2regr.onesided <- function(x1, x2, y1, y2, p = function(x){0.5}, w1 = functi
   sigma22.x2 <- nadarayawatson(n2, x2, y2 ^ 2, n2, x2, h2.nw) - m2.x2 ^ 2
 
   # Densities
-  h1.dens <- bw.ucv(x1, lower = 0.05, upper = 1.)
-  h2.dens <- bw.ucv(x2, lower = 0.05, upper = 1.)
+  h1.dens <- stats::bw.ucv(x1, lower = 0.05, upper = 1.)
+  h2.dens <- stats::bw.ucv(x2, lower = 0.05, upper = 1.)
 
   f1.x1 <- kerneldensity(n1, x1, x1, h1.dens)
   f2.x1 <- kerneldensity(n2, x2, x1, h2.dens)
@@ -122,14 +125,15 @@ comp2regr.onesided <- function(x1, x2, y1, y2, p = function(x){0.5}, w1 = functi
   f.x2 <- p1.x2 * w2.x2 * f2.x2 + p2.x2 * w1.x2 * f1.x2
 
   sigma.asymp <- sqrt(kappa2 * mean(sigma21.x2 * f.x2 * p1.x2 * w2.x2 / f1.x2) +
-                        kappa2 * mean(sigma21.x1 * f.x1 * p2.x1 * w1.x1 / f1.x1) +
-                        kappa1 * mean(sigma22.x2 * f.x2 * p1.x2 * w2.x2 / f2.x2) +
-                        kappa1 * mean(sigma22.x1 * f.x1 * p2.x1 * w1.x1 / f2.x1)
-  )
+                      kappa2 * mean(sigma21.x1 * f.x1 * p2.x1 * w1.x1 / f1.x1) +
+                      kappa1 * mean(sigma22.x2 * f.x2 * p1.x2 * w2.x2 / f2.x2) +
+                      kappa1 * mean(sigma22.x1 * f.x1 * p2.x1 * w1.x1 / f2.x1))
 
   test.statistic <- sqrt(n1 * n2 / n) * (mean(eps02 * w2.x2) -
                                          mean(eps01 * w1.x1)) / sigma.asymp
-  names( test.statistic) <- " test statistic"
+
+  names(test.statistic) <- "test statistic"
+
   p.value <- 1 - pnorm(test.statistic)
 
   res <- list(p.value = p.value, data.name = DNAME,

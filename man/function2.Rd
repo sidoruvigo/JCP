@@ -4,5 +4,23 @@
 \alias{function2}
 \title{function2}
 \usage{
-function2(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1)
+function2(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1)
+}
+\arguments{
+\item{x1}{TODO}
+
+\item{y1}{TODO}
+
+\item{x2}{TODO}
+
+\item{y2}{TODO}
+
+\item{B}{bootstrap samples}
+
+\item{bandwidths}{TODO}
+
+\item{sigma.w}{TODO}
+}
+\description{
+description of the function
 }

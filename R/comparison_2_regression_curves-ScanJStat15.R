@@ -1,15 +1,17 @@
 #' @title function1
+#' @param x1 TODO
+#' @param y1 TODO
+#' @param x2 TODO
+#' @param y2 TODO
+#' @param B bootstrap samples
+#' @param bandwidths TODO
+#' @param sigma.w TODO
 #' @export
-function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
+function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) {
 
-  if(is.null(B)) {
-    B <- 1000
-  }
-
-  if (is.null(bandwidths)) {
-    bandwidths <- "cv"
-  }
-
+  # if (is.null(bandwidths)) {
+  #   bandwidths <- "cv"
+  # }
 
   # GENERAL FUNCTIONS (kernel-based estimators)
 
@@ -18,31 +20,34 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
     (0.75 * (1 - u ^ 2)) * (u < 1) * (u > -1)
   }
 
-  # Kernel density estimator. This function calculates the kernel density estimator on the collection of "npoints" points "points" based on the "ndata" observations xdata and the bandwidth "h".
+  # Kernel density estimator. This function calculates the kernel density
+  # estimator on the collection of "npoints" points "points" based on the "ndata"
+  # observations xdata and the bandwidth "h".
   kerneldensity <- function(ndata, data, points, h) {
     rowSums(kernel(outer(points, data, "-") / h)) / (ndata * h)
   }
 
-  # Nadaraya-Watson estimator. This function calculates the N-W estimator on the collection of "npoints" points "points" based on the "ndata" observations (xdata,ydata) and the bandwidth "h".
+  # Nadaraya-Watson estimator. This function calculates the N-W estimator on the
+  # collection of "npoints" points "points" based on the "ndata" observations
+  # (xdata,ydata) and the bandwidth "h".
   nadarayawatson <- function(ndata, xdata, ydata, npoints, points, h) {
-    as.vector({matk = kernel((points %*% t(rep(1, ndata)) - t(xdata %*% t(rep(1, npoints)))) / h)
+    as.vector({matk <- kernel((points %*% t(rep(1, ndata)) - t(xdata %*% t(rep(1, npoints)))) / h)
     (matk %*% ydata) / (matk %*% rep(1, ndata))
     })
   }
 
   # Cross-validation bandwidth selector (Nadaraya-Watson)
   h.crossvalidation.nw <- function(n, x, y, hmin, hmax, hngrid) {
-    crossvalue = rep(0, hngrid)
-    h = seq(hmin, hmax, len = hngrid)
+    crossvalue <- rep(0, hngrid)
+    h <- seq(hmin, hmax, len = hngrid)
     for (j in 1:hngrid) {
       for (i in 1:n) {
-        crossvalue[j] = crossvalue[j] + (y[i] - nadarayawatson(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^
-          2
+        crossvalue[j] <- crossvalue[j] + (y[i] - nadarayawatson(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^ 2
       }
     }
-    crossvalue = crossvalue / n
+    crossvalue <- crossvalue / n
     #plot(h,crossvalue)
-    h.crossvalidation.nw = h[which.min(crossvalue)]
+    h.crossvalidation.nw <- h[which.min(crossvalue)]
   }
 
   # Local-linear regression estimator
@@ -51,9 +56,11 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
     mat.x <- outer(points, xdata, "-")
     mat.k <- kernel(mat.x / h)
     mat.y <- matrix(rep(ydata, npoints), nrow = npoints, byrow = T)
+
     s0 <- matrix(rep(rowSums(mat.k) / ndata, ndata), ncol = ndata)
     s1 <- matrix(rep(rowSums(mat.x * mat.k) / ndata, ndata), ncol = ndata)
     s2 <- matrix(rep(rowSums((mat.x ^ 2) * mat.k) / ndata, ndata), ncol = ndata)
+
     return((rowSums((s2 - s1 * mat.x) * mat.k * mat.y) / ndata) / (s2[, 1] * s0[, 1] - s1[, 1] ^ 2))
   }
 
@@ -72,15 +79,12 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
     h.crossvalidation.ll <- h[which.min(crossvalue)]
   }
 
-
-
-
   # Functions related to the calculation of the test statistic Tn1 and Tn2
 
   # weight function w: Normal(0,sigma)
   # sigma.w <- 1
   w <- function(t, sigma.w) {
-    dnorm(t, sd = sigma.w)
+    stats::dnorm(t, sd = sigma.w)
   }  # Normal
 
   # Function Iw (depends on the function w)
@@ -105,7 +109,7 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
   Tn1.function <- function(n1, n2, n, eps1, eps01, eps2, eps02, sigma.w) {
     (sum(Iw(outer(eps1, eps1, "-"), sigma.w)) + sum(Iw(outer(eps01, eps01, "-"), sigma.w)) -
        2 * sum(Iw(outer(eps1, eps01, "-"), sigma.w))) / n1 + (sum(Iw(outer(eps2, eps2, "-"), sigma.w)) +
-                                                                sum(Iw(outer(eps02, eps02, "-"), sigma.w)) - 2 * sum(Iw(outer(eps2, eps02, "-"), sigma.w))) /n2
+                                                              sum(Iw(outer(eps02, eps02, "-"), sigma.w)) - 2 * sum(Iw(outer(eps2, eps02, "-"), sigma.w))) /n2
   }
 
   Tn2.function <- function(n1, n2, n, eps1, eps01, eps2, eps02, sigma.w) {
@@ -117,8 +121,8 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
 
   # Arguments
   # data: x1, y1, x2, y2
-  # B (default=1000)
-  # h.m1, h.m2, h.sigma1, h.sigma2 (default=cross-validation)
+  # B (default = 1000)
+  # h.m1, h.m2, h.sigma1, h.sigma2 (default = cross-validation)
   # sigma.w (default =1)
 
   # bandwidths = "cv"
@@ -132,8 +136,7 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
   bootstrap <- TRUE
   # B <- 200
 
-  ########################
-  ########################
+#--------------------------------------------------------------------------------
 
   n1 <- length(x1)
   n2 <- length(x2)
@@ -176,24 +179,32 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
   f2x2.hat <- rep(0, n2)
 
   if (bandwidths == "cv") {
+
     h.sigma1 <- h.crossvalidation.nw(n1, x1, y1, hmin, hmax, hngrid)
-    #h.sigma1 = npregbw(xdat=x1,ydat=y1,bwmethod="cv.ls",kernel="epanech",regtype="lc")$bw
+   #h.sigma1 <- npregbw(xdat = x1, ydat = y1, bwmethod = "cv.ls", kernel = "epanech", regtype = "lc")$bw
     h.sigma2 <- h.crossvalidation.nw(n2, x2, y2, hmin, hmax, hngrid)
-    #h.m2.nw = npregbw(xdat=x2,ydat=y2,bwmethod="cv.ls",kernel="epanech",regtype="lc")$bw
+   #h.m2.nw <- npregbw(xdat = x2, ydat = y2, bwmethod = "cv.ls", kernel = "epanech", regtype = "lc")$bw
 
     h.m1 <- h.crossvalidation.ll(n1, x1, y1, hmin, hmax, hngrid)
-    #h.m1 = npregbw(xdat=x1,ydat=y1,bwmethod="cv.ls",kernel="epanech",regtype="ll")$bw
+   #h.m1 <- npregbw(xdat = x1, ydat = y1, bwmethod = "cv.ls", kernel = "epanech", regtype = "ll")$bw
     h.m2 <- h.crossvalidation.ll(n2, x2, y2, hmin, hmax, hngrid)
-    #h.m1 = npregbw(xdat=x2,ydat=y2,bwmethod="cv.ls",kernel="epanech",regtype="ll")$bw
+   #h.m1 <- npregbw(xdat = x2, ydat = y2, bwmethod = "cv.ls", kernel = "epanech", regtype = "ll")$bw
+
+  } else {
+
+    h.sigma1 <- bandwidths[1]
+    h.sigma2 <- bandwidths[2]
+
+    h.m1 <- bandwidths[3]
+    h.m2 <- bandwidths[4]
 
   }
-
   # Estimation of m1, m2, m0, sigma1, sigma2
 
   sigma1x1.hat <- sqrt(abs(nadarayawatson(n1, x1, y1 ^ 2, n1, x1, h.sigma1) -
                            nadarayawatson(n1, x1, y1, n1, x1, h.sigma1) ^ 2))
   sigma1x2.hat <- sqrt(abs(nadarayawatson(n1, x1, y1 ^ 2, n2, x2, h.sigma1) -
-                           nadarayawatson(n1, x1, y1, n2, x2, h.sigma1)^2))
+                           nadarayawatson(n1, x1, y1, n2, x2, h.sigma1) ^ 2))
 
   sigma2x1.hat <- sqrt(abs(nadarayawatson(n2, x2, y2 ^ 2, n1, x1, h.sigma2) -
                            nadarayawatson(n2, x2, y2, n1, x1, h.sigma2) ^ 2))
@@ -257,7 +268,7 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
   beta2 <- beta[2]
 
   # p-value
-  pvalue.Tn1.asym <- mean(Tn1 < beta[1] * rchisq(10 ^ 6, 1) + beta[2] * stats::rchisq(10 ^ 6, 1))
+  pvalue.Tn1.asym <- mean(Tn1 < beta[1] * stats::rchisq(10 ^ 6, 1) + beta[2] * stats::rchisq(10 ^ 6, 1))
 
 
 
@@ -357,7 +368,7 @@ function1 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1) {
 # x2 <- runif(n2)
 # y2 <- x2 + 0.25 * rnorm(n2)
 #
-# res <- function1(x1, y1, x2, y2)
+# res <- function1(x1, y1, x2, y2, B = 103)
 
 
 

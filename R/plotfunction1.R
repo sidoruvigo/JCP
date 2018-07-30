@@ -2,7 +2,7 @@
 # Plot function
 #===============================================================================
 
-plot.function1 <-  function(x, ...) {
+plot.function1 <- function(x, ...) {
   graphics::par(mfrow = c(2, 2))
 
   graphics::plot(c(x$x1, x$x2), c(x$y1, x$y2), type = "n", xlab = "covariate",
