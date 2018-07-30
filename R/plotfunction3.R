@@ -1,5 +1,6 @@
 
-plot.function3(x, ...){
+
+plot.function3 <- function(x, ...){
   par(mfrow = c(2, 2))
 
   plot(c(x1, x2),c(y1, y2), type = "n", xlab = "covariate", ylab = "response",
