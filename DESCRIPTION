@@ -6,7 +6,7 @@ Authors@R: c(
   person("José Carlos", "Soage González", email = "jsoage@uvigo.es", role = "cre"))
 Maintainer: José Carlos Soage González <jsoage@uvigo.es>
 Description: What the package does (one paragraph).
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.2.0)
 License: GPL-2 
 Imports: np
 Encoding: UTF-8
