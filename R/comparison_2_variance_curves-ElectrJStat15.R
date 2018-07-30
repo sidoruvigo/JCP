@@ -2,6 +2,67 @@
 #' @export
 function3 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1){
 
+  # GENERAL FUNCTIONS (kernel-based estimators)
+
+  # Kernel Epanechnikov (density)
+  kernel <- function(u) {
+    (0.75 * (1 - u ^ 2)) * (u < 1) * (u > -1)
+  }
+
+  # Kernel density estimator. This function calculates the kernel density estimator on the collection of "npoints" points "points" based on the "ndata" observations xdata and the bandwidth "h".
+  kerneldensity <- function(ndata, data, points, h) {
+    rowSums(kernel(outer(points, data, "-") / h)) / (ndata * h)
+  }
+
+  # Nadaraya-Watson estimator. This function calculates the N-W estimator on the collection of "npoints" points "points" based on the "ndata" observations (xdata,ydata) and the bandwidth "h".
+  nadarayawatson <- function(ndata, xdata, ydata, npoints, points, h) {
+    as.vector({matk <- kernel((points %*% t(rep(1, ndata)) - t(xdata %*% t(rep(1, npoints)))) / h)
+    (matk %*% ydata) / (matk %*% rep(1, ndata))
+    })
+  }
+
+  # Cross-validation bandwidth selector (Nadaraya-Watson)
+  h.crossvalidation.nw <- function(n, x, y, hmin, hmax, hngrid) {
+    crossvalue <- rep(0, hngrid)
+    h <- seq(hmin, hmax, len = hngrid)
+    for (j in 1:hngrid) {
+      for (i in 1:n) {
+        crossvalue[j] <- crossvalue[j] + (y[i] - nadarayawatson(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^
+          2
+      }
+    }
+    crossvalue <- crossvalue / n
+    #plot(h,crossvalue)
+    h.crossvalidation.nw <- h[which.min(crossvalue)]
+  }
+
+  # Local-linear regression estimator
+  locallinear <- function(ndata, xdata, ydata, npoints, points, h) {
+    # See Wand and Jones (1995). "Kernel Smoothing" (page 119).
+    mat.x <- outer(points, xdata, "-")
+    mat.k <- kernel(mat.x / h)
+    mat.y <- matrix(rep(ydata, npoints), nrow = npoints, byrow = T)
+    s0 <- matrix(rep(rowSums(mat.k) / ndata, ndata), ncol = ndata)
+    s1 <- matrix(rep(rowSums(mat.x * mat.k) / ndata, ndata), ncol = ndata)
+    s2 <- matrix(rep(rowSums((mat.x ^ 2) * mat.k) / ndata, ndata), ncol = ndata)
+    return((rowSums((s2 - s1 * mat.x) * mat.k * mat.y) / ndata) / (s2[, 1] * s0[, 1] - s1[, 1] ^ 2))
+  }
+
+  # Cross-validation bandwidth selector (local linear)
+  h.crossvalidation.ll <- function(n, x, y, hmin, hmax, hngrid) {
+    crossvalue <- rep(0, hngrid)
+    h <- seq(hmin, hmax, len = hngrid)
+    for (j in 1:hngrid) {
+      for (i in 1:n) {
+        crossvalue[j] <- crossvalue[j] + (y[i] - locallinear(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^
+          2
+      }
+    }
+    crossvalue <- crossvalue / n
+    #plot(h,crossvalue)
+    h.crossvalidation.ll <- h[which.min(crossvalue)]
+  }
+
   # Functions related to the calculation of the test statistics based on the ecf
 
   # weight function w: Normal(0,sigma)
@@ -334,14 +395,19 @@ function3 <- function(x1, y1, x2, y2, B = 100, bandwidths = "cv", sigma.w = 1){
 
   # Output:
 
-  pvalue.Tn1.boot
-  pvalue.Tn1.asym
-  pvalue.Tn2.boot
-  pvalue.KS.1.boot
-  pvalue.KS.2.boot
-  pvalue.CM.1.boot
-  pvalue.CM.1.asym
-  pvalue.CM.2.boot
+  return(list(pvalue.Tn1.boot  = pvalue.Tn1.boot,  pvalue.Tn1.asym  = pvalue.Tn1.asym,
+              pvalue.Tn2.boot  = pvalue.Tn2.boot,  pvalue.KS.1.boot = pvalue.KS.1.boot,
+              pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
+              pvalue.CM.1.asym = pvalue.CM.1.asym, pvalue.CM.2.boot = pvalue.CM.2.boot))
+
+  # pvalue.Tn1.boot
+  # pvalue.Tn1.asym
+  # pvalue.Tn2.boot
+  # pvalue.KS.1.boot
+  # pvalue.KS.2.boot
+  # pvalue.CM.1.boot
+  # pvalue.CM.1.asym
+  # pvalue.CM.2.boot
 
 }
 
@@ -357,6 +423,7 @@ y1 <- x1 + 0.25 * rnorm(n1)
 x2 <- runif(n2)
 y2 <- x2 + 0.25 * rnorm(n2)
 
+function3(x1, y1, x2, y2)
 
 #===============================================================================
 # Plot function
