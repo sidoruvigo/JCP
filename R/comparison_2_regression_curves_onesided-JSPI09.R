@@ -117,7 +117,6 @@ comp2regr.onesided <- function(x1, x2, y1, y2, p = function(x){0.5}, w1 = functi
   f2.x2 <- kerneldensity(n2, x2, x2, h2.dens)
 
   # Test statistic
-
   eps01 <- y1 - m.x1
   eps02 <- y2 - m.x2
 

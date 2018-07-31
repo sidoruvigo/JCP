@@ -291,8 +291,18 @@ function2 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
   # pvalue.KS.2.boot
   # pvalue.CM.2.boot
 
-  return(list(pvalue.KS.1.boot = pvalue.KS.1.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
+  print(list(pvalue.KS.1.boot = pvalue.KS.1.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
              pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.2.boot = pvalue.CM.2.boot))
+
+  r <- list(pvalue.KS.1.boot = pvalue.KS.1.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
+             pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.2.boot = pvalue.CM.2.boot, x1 = x1,
+             x2 = x2, y1 = y1, y2 = y2, m1x1.hat = m1x1.hat, m0x1.hat = m0x1.hat,
+             m2x2.hat = m2x2.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
+             sigma2x2.hat = sigma2x2.hat, eps1.hat = eps1.hat, eps01.hat = eps01.hat,
+             eps2.hat = eps2.hat, eps02.hat = eps02.hat)
+
+  class(r) <- c('list', 'function2')
+  return(r)
 }
 
 

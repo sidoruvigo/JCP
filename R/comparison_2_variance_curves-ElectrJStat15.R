@@ -395,11 +395,20 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
 
   # Output:
 
-  r <- list(pvalue.Tn1.boot  = pvalue.Tn1.boot,  pvalue.Tn1.asym  = pvalue.Tn1.asym,
+  print(list(pvalue.Tn1.boot  = pvalue.Tn1.boot,  pvalue.Tn1.asym  = pvalue.Tn1.asym,
             pvalue.Tn2.boot  = pvalue.Tn2.boot,  pvalue.KS.1.boot = pvalue.KS.1.boot,
             pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
-            pvalue.CM.1.asym = pvalue.CM.1.asym, pvalue.CM.2.boot = pvalue.CM.2.boot)
+            pvalue.CM.1.asym = pvalue.CM.1.asym, pvalue.CM.2.boot = pvalue.CM.2.boot))
 
+
+  r <- list(pvalue.Tn1.boot  = pvalue.Tn1.boot,  pvalue.Tn1.asym  = pvalue.Tn1.asym,
+  pvalue.Tn2.boot  = pvalue.Tn2.boot,  pvalue.KS.1.boot = pvalue.KS.1.boot,
+  pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
+  pvalue.CM.1.asym = pvalue.CM.1.asym, pvalue.CM.2.boot = pvalue.CM.2.boot, x1 = x1,
+  x2 = x2, y1 = y1, y2 = y2, m1x1.hat = m1x1.hat, m0x1.hat = m0x1.hat,
+  m2x2.hat = m2x2.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
+  sigma2x2.hat = sigma2x2.hat, eps1.hat = eps1.hat, eps01.hat = eps01.hat,
+  eps2.hat = eps2.hat, eps02.hat = eps02.hat)
 
   class(r) <- c('list', 'function3')
   return(r)
@@ -427,7 +436,7 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
 # x2 <- runif(n2)
 # y2 <- x2 + 0.25 * rnorm(n2)
 #
-# function3(x1, y1, x2, y2)
+# res <- function3(x1, y1, x2, y2, B = 100)
 
 
 #===============================================================================

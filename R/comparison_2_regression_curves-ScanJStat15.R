@@ -70,8 +70,7 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
     h <- seq(hmin, hmax, len = hngrid)
     for (j in 1:hngrid) {
       for (i in 1:n) {
-        crossvalue[j] <- crossvalue[j] + (y[i] - locallinear(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^
-          2
+        crossvalue[j] <- crossvalue[j] + (y[i] - locallinear(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^ 2
       }
     }
     crossvalue <- crossvalue / n
@@ -108,14 +107,14 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
   # Test statistics T1 and T2
   Tn1.function <- function(n1, n2, n, eps1, eps01, eps2, eps02, sigma.w) {
     (sum(Iw(outer(eps1, eps1, "-"), sigma.w)) + sum(Iw(outer(eps01, eps01, "-"), sigma.w)) -
-       2 * sum(Iw(outer(eps1, eps01, "-"), sigma.w))) / n1 + (sum(Iw(outer(eps2, eps2, "-"), sigma.w)) +
+       2 * sum(Iw(outer(eps1, eps01, "-"), sigma.w))) / n1 + (sum(Iw(outer(eps2,  eps2,  "-"), sigma.w)) +
                                                               sum(Iw(outer(eps02, eps02, "-"), sigma.w)) - 2 * sum(Iw(outer(eps2, eps02, "-"), sigma.w))) /n2
   }
 
   Tn2.function <- function(n1, n2, n, eps1, eps01, eps2, eps02, sigma.w) {
-    (sum(Iw(outer(c(eps1, eps2), c(eps1, eps2), "-"), sigma.w)) +
-       sum(Iw(outer(c(eps01, eps02), c(eps01, eps02), "-"), sigma.w)) -
-       2 * sum(Iw(outer(c(eps1, eps2), c(eps01, eps02), "-"), sigma.w))) / n
+    (sum(Iw(outer(c(eps1,  eps2),  c(eps1,  eps2),  "-"), sigma.w)) +
+     sum(Iw(outer(c(eps01, eps02), c(eps01, eps02), "-"), sigma.w)) -
+ 2 * sum(Iw(outer(c(eps1,  eps2),  c(eps01, eps02), "-"), sigma.w))) / n
   }
 
 
@@ -183,7 +182,7 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
     h.sigma1 <- h.crossvalidation.nw(n1, x1, y1, hmin, hmax, hngrid)
    #h.sigma1 <- npregbw(xdat = x1, ydat = y1, bwmethod = "cv.ls", kernel = "epanech", regtype = "lc")$bw
     h.sigma2 <- h.crossvalidation.nw(n2, x2, y2, hmin, hmax, hngrid)
-   #h.m2.nw <- npregbw(xdat = x2, ydat = y2, bwmethod = "cv.ls", kernel = "epanech", regtype = "lc")$bw
+   #h.m2.nw  <- npregbw(xdat = x2, ydat = y2, bwmethod = "cv.ls", kernel = "epanech", regtype = "lc")$bw
 
     h.m1 <- h.crossvalidation.ll(n1, x1, y1, hmin, hmax, hngrid)
    #h.m1 <- npregbw(xdat = x1, ydat = y1, bwmethod = "cv.ls", kernel = "epanech", regtype = "ll")$bw
@@ -233,7 +232,6 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
 
 
   # Residuals
-
   eps1.hat  <- (y1 - m1x1.hat) / sigma1x1.hat
   eps01.hat <- (y1 - m0x1.hat) / sigma1x1.hat
 
@@ -241,7 +239,6 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
   eps02.hat <- (y2 - m0x2.hat) / sigma2x2.hat
 
   # Test statistics
-
   Tn1 <- Tn1.function(n1, n2, n, eps1.hat, eps01.hat, eps2.hat, eps02.hat, sigma.w)
 
   Tn2 <- Tn2.function(n1, n2, n, eps1.hat, eps01.hat, eps2.hat, eps02.hat, sigma.w)
@@ -252,13 +249,17 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
   a.matrix <- diag(c(-(sum(D2Iw(outer(eps1.hat, eps1.hat, "-"), sigma.w)) - n1) / (n1 * (n1 - 1)), -(sum(D2Iw(outer(eps2.hat, eps2.hat, "-"), sigma.w)) - n2) / (n2 * (n2 - 1))))
 
   # Estimation of matrix Sigma
-  sigma11 <- 1 - 2 * p1 * mean(f1x1 / fmixx1) + p1 * (p1 * mean((f1x1/fmixx1)^2) + p2*mean((f1x2*sigma2x2.hat/(fmixx2*sigma1x2.hat))^2) )
-  sigma22 <- 1 - 2 * p2 * mean(f2x2 / fmixx2) + p2 * (p1 * mean((f2x1*sigma1x1.hat/(fmixx1*sigma2x1.hat))^2) + p2*mean((f2x2/fmixx2)^2) )
+  sigma11 <- 1 - 2 * p1 * mean(f1x1 / fmixx1) +
+             p1 * (p1 * mean((f1x1/fmixx1) ^ 2) +
+             p2 * mean((f1x2 * sigma2x2.hat / (fmixx2 * sigma1x2.hat))^2) )
+  sigma22 <- 1 - 2 * p2 * mean(f2x2 / fmixx2) +
+             p2 * (p1 * mean((f2x1*sigma1x1.hat / (fmixx1 * sigma2x1.hat)) ^ 2) +
+             p2 * mean((f2x2 / fmixx2) ^ 2) )
 
   sigma12 <- sqrt(p1 * p2) * (p1 * mean(f1x1 * f2x1 * sigma1x1.hat / (sigma2x1.hat * (fmixx1 ^ 2))) +
-                   p2 * mean(f1x2 * f2x2 * sigma2x2.hat / (sigma1x2.hat * (fmixx2 ^ 2))) -
-                     mean(sigma2x2.hat * f1x2 / (sigma1x2.hat * fmixx2)) -
-                     mean(sigma1x1.hat * f2x1 / (sigma2x1.hat * fmixx1)))
+                  p2 * mean(f1x2 * f2x2 * sigma2x2.hat / (sigma1x2.hat * (fmixx2 ^ 2))) -
+                  mean(sigma2x2.hat * f1x2 / (sigma1x2.hat * fmixx2)) -
+                  mean(sigma1x1.hat * f2x1 / (sigma2x1.hat * fmixx1)))
 
   sigma.matrix <- matrix(c(sigma11, sigma12, sigma12, sigma22), nrow = 2)
 
@@ -324,10 +325,10 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
 
   # Test statistics
 
-  Tn1.boot[ib] <- Tn1.function(n1, n2, n, eps1.hat.boot, eps01.hat.boot,
-                               eps2.hat.boot, eps02.hat.boot, sigma.w)
-  Tn2.boot[ib] <- Tn2.function(n1, n2, n, eps1.hat.boot, eps01.hat.boot,
-                               eps2.hat.boot, eps02.hat.boot, sigma.w)
+	  Tn1.boot[ib] <- Tn1.function(n1, n2, n, eps1.hat.boot, eps01.hat.boot,
+                                 eps2.hat.boot, eps02.hat.boot, sigma.w)
+	  Tn2.boot[ib] <- Tn2.function(n1, n2, n, eps1.hat.boot, eps01.hat.boot,
+                                 eps2.hat.boot, eps02.hat.boot, sigma.w)
 
   }  #ib
 
@@ -347,9 +348,9 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
   r <- list(Tn1.asym = pvalue.Tn1.asym,
             Tn1.boot = pvalue.Tn1.boot,
             Tn2.boot = pvalue.Tn2.boot, x1 = x1, y1 = y1, x2 = x2, y2 = y2,
-            m0x1.hat = m0x1.hat, m0x2.hat = m0x2.hat, eps1.hat = eps1.hat,
+            m0x1.hat  = m0x1.hat, m0x2.hat = m0x2.hat, eps1.hat = eps1.hat,
             eps01.hat = eps01.hat, eps2.hat = eps2.hat, eps02.hat = eps02.hat,
-            m1x1.hat = m1x1.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
+            m1x1.hat  = m1x1.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
             sigma2x2.hat = sigma2x2.hat)
 
   class(r) <- c('list', 'function1')
@@ -361,14 +362,14 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
 # Example
 #===============================================================================
 
-# n1 <- 100
-# n2 <- 200
-# x1 <- runif(n1)
-# y1 <- x1 + 0.25 * rnorm(n1)
-# x2 <- runif(n2)
-# y2 <- x2 + 0.25 * rnorm(n2)
-#
-# res <- function1(x1, y1, x2, y2, B = 103)
+n1 <- 100
+n2 <- 200
+x1 <- runif(n1)
+y1 <- x1 + 0.25 * rnorm(n1)
+x2 <- runif(n2)
+y2 <- x2 + 0.25 * rnorm(n2)
+
+res <- function1(x1, y1, x2, y2, B = 103)
 
 
 
