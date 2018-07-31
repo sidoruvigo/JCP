@@ -10,7 +10,7 @@
 #' @importFrom graphics lines par plot points
 #' @importFrom stats dnorm ecdf pnorm
 #' @export
-function2 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) {
+comp2regr.ecdf <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) {
 
   # GENERAL FUNCTIONS (kernel-based estimators)
 
@@ -301,7 +301,7 @@ function2 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
              sigma2x2.hat = sigma2x2.hat, eps1.hat = eps1.hat, eps01.hat = eps01.hat,
              eps2.hat = eps2.hat, eps02.hat = eps02.hat)
 
-  class(r) <- c('list', 'function2')
+  class(r) <- c('list', 'comp2regr.ecdf')
   return(r)
 }
 
@@ -319,7 +319,7 @@ function2 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
 # x2 <- runif(n2)
 # y2 <- x2 + 0.25 * rnorm(n2)
 #
-# res <- function2(x1, y1, x2, y2)
+# res <- comp2regr.ecdf(x1, y1, x2, y2)
 
 
 # Plots (optional)

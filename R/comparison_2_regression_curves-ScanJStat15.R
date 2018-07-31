@@ -1,4 +1,5 @@
 #' @title function1
+#' @description TODO
 #' @param x1 TODO
 #' @param y1 TODO
 #' @param x2 TODO
@@ -7,7 +8,7 @@
 #' @param bandwidths TODO
 #' @param sigma.w TODO
 #' @export
-function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) {
+comp2regr.ecf <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) {
 
   # if (is.null(bandwidths)) {
   #   bandwidths <- "cv"
@@ -353,7 +354,7 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
             m1x1.hat  = m1x1.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
             sigma2x2.hat = sigma2x2.hat)
 
-  class(r) <- c('list', 'function1')
+  class(r) <- c('list', 'comp2regr.ecf')
   return(r)
 }
 
@@ -369,7 +370,7 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
 # x2 <- runif(n2)
 # y2 <- x2 + 0.25 * rnorm(n2)
 #
-# res <- function1(x1, y1, x2, y2, B = 103)
+# res <- comp2regr.ecf(x1, y1, x2, y2, B = 103)
 
 
 

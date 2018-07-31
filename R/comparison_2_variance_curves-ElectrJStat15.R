@@ -1,4 +1,5 @@
 #' @title function3
+#' @description TODO
 #' @param x1 TODO
 #' @param y1 TODO
 #' @param x2 TODO
@@ -7,7 +8,7 @@
 #' @param bandwidths TODO
 #' @param sigma.w TODO
 #' @export
-function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
+comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
 
   # GENERAL FUNCTIONS (kernel-based estimators)
 
@@ -321,7 +322,6 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
     a2smooth <- 0.
 
     # standardized residuals
-
     eps1.stand <- (eps1.hat - mean(eps1.hat)) / stats::sd(eps1.hat)
     eps2.stand <- (eps2.hat - mean(eps2.hat)) / stats::sd(eps2.hat)
 
@@ -361,7 +361,6 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
       eps02.hat.boot <- (y2.boot - m2x2.hat.boot) / sigma0x2.hat.boot
 
       # Test statistics
-
       Tn1.boot[ib]  <- Tn1.function(n1, n2, n, eps1.hat.boot, eps01.hat.boot,
                                     eps2.hat.boot, eps02.hat.boot, sigma.w)
       Tn2.boot[ib]  <- Tn2.function(n1, n2, n, eps1.hat.boot, eps01.hat.boot
@@ -379,8 +378,7 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
 
   }  #ib
 
-  # bootstrap p-values
-
+  # Bootstrap p-values
   pvalue.Tn1.boot  <- mean(Tn1 < Tn1.boot)
   pvalue.Tn2.boot  <- mean(Tn2 < Tn2.boot)
 
@@ -394,7 +392,6 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
 
 
   # Output:
-
   print(list(pvalue.Tn1.boot  = pvalue.Tn1.boot,  pvalue.Tn1.asym  = pvalue.Tn1.asym,
             pvalue.Tn2.boot  = pvalue.Tn2.boot,  pvalue.KS.1.boot = pvalue.KS.1.boot,
             pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
@@ -410,7 +407,7 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
   sigma2x2.hat = sigma2x2.hat, eps1.hat = eps1.hat, eps01.hat = eps01.hat,
   eps2.hat = eps2.hat, eps02.hat = eps02.hat)
 
-  class(r) <- c('list', 'function3')
+  class(r) <- c('list', 'comp2condvar')
   return(r)
 
   # pvalue.Tn1.boot
@@ -421,7 +418,6 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
   # pvalue.CM.1.boot
   # pvalue.CM.1.asym
   # pvalue.CM.2.boot
-
 }
 
 
@@ -436,7 +432,7 @@ function3 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1){
 # x2 <- runif(n2)
 # y2 <- x2 + 0.25 * rnorm(n2)
 #
-# res <- function3(x1, y1, x2, y2, B = 100)
+# res <- comp2condvar(x1, y1, x2, y2, B = 100)
 
 
 #===============================================================================
