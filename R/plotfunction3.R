@@ -1,5 +1,5 @@
-
-
+#' @title fuction 3
+#' @export
 plot.function3 <- function(x, ...) {
   graphics::par(mfrow = c(2, 2))
 

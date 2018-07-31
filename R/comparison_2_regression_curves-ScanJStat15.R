@@ -362,14 +362,14 @@ function1 <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 1) 
 # Example
 #===============================================================================
 
-n1 <- 100
-n2 <- 200
-x1 <- runif(n1)
-y1 <- x1 + 0.25 * rnorm(n1)
-x2 <- runif(n2)
-y2 <- x2 + 0.25 * rnorm(n2)
-
-res <- function1(x1, y1, x2, y2, B = 103)
+# n1 <- 100
+# n2 <- 200
+# x1 <- runif(n1)
+# y1 <- x1 + 0.25 * rnorm(n1)
+# x2 <- runif(n2)
+# y2 <- x2 + 0.25 * rnorm(n2)
+#
+# res <- function1(x1, y1, x2, y2, B = 103)
 
 
 
