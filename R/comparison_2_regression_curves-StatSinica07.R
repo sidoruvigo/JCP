@@ -236,9 +236,9 @@ comp2regr.ecdf <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w 
   eps2.boot.matrix <- matrix(sqrt(1 - a2smooth ^ 2) *
                              sample(eps2.stand, size = B * n2, replace = TRUE) +
                              a2smooth * stats::rnorm(B * n2), nrow = B, ncol = n2)
-
+  pb <- txtProgressBar(min = 0, max = B, style = 3)
   for (ib in 1:B){
-
+    setTxtProgressBar(pb, ib)
   #	print(c("ib",ib))
 
     y1.boot <- m0x1.hat + sigma1x1.hat * eps1.boot.matrix[ib, ]

@@ -40,8 +40,7 @@ comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 
     h <- seq(hmin, hmax, len = hngrid)
     for (j in 1:hngrid) {
       for (i in 1:n) {
-        crossvalue[j] <- crossvalue[j] + (y[i] - nadarayawatson(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^
-          2
+        crossvalue[j] <- crossvalue[j] + (y[i] - nadarayawatson(n - 1, x[-i], y[-i], 1, x[i], h[j])) ^ 2
       }
     }
     crossvalue <- crossvalue / n
@@ -82,12 +81,12 @@ comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 
 
   w <- function(t, sigma.w) {
     dnorm(t, sd = sigma.w)
-  }  # Normal
+  } # Normal
 
   # Function Iw (depends on the function w)
   Iw <- function(t, sigma.w) {
     exp(-0.5 * ((sigma.w * t) ^ 2))
-  }  # w Normal
+  } # w Normal
 
   # Function D2Iw (depends on the function w)
   D2Iw <- function(t, sigma.w) {
@@ -119,8 +118,6 @@ comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 
      sum(Iw(outer(c(eps01, eps02), c(eps01, eps02), "-"), sigma.w)) -
  2 * sum(Iw(outer(c(eps1,  eps2),  c(eps01, eps02), "-"), sigma.w))) / n
 	}
-
-
 
   # Cramér-von Mises statistic
   emp.distr <- function(ndata, data, npoints, points) {
@@ -197,8 +194,6 @@ comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 
   f1x2.hat <- rep(0, n2)
   f2x1.hat <- rep(0, n1)
   f2x2.hat <- rep(0, n2)
-
-
 
   # Estimation of sigma1, sigma2 and sigma0
 
@@ -329,9 +324,9 @@ comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 
                                a1smooth * stats::rnorm(B * n1), nrow = B, ncol = n1)
     eps2.boot.matrix <- matrix(sqrt(1 - a2smooth ^ 2) * sample(eps2.hat, size = B * n2, replace = TRUE) +
                                a2smooth * stats::rnorm(B * n2), nrow = B, ncol = n2)
-
+    pb <- txtProgressBar(min = 0, max = B, style = 3)
     for (ib in 1:B) {
-
+      setTxtProgressBar(pb, ib)
   #	print(c("ib",ib))
 
       y1.boot <- m0x1.hat + sigma0x1.hat * eps1.boot.matrix[ib, ]
@@ -399,13 +394,13 @@ comp2condvar <- function(x1, y1, x2, y2, B = 1000, bandwidths = "cv", sigma.w = 
 
 
   r <- list(pvalue.Tn1.boot  = pvalue.Tn1.boot,  pvalue.Tn1.asym  = pvalue.Tn1.asym,
-  pvalue.Tn2.boot  = pvalue.Tn2.boot,  pvalue.KS.1.boot = pvalue.KS.1.boot,
-  pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
-  pvalue.CM.1.asym = pvalue.CM.1.asym, pvalue.CM.2.boot = pvalue.CM.2.boot, x1 = x1,
-  x2 = x2, y1 = y1, y2 = y2, m1x1.hat = m1x1.hat, m0x1.hat = m0x1.hat,
-  m2x2.hat = m2x2.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
-  sigma2x2.hat = sigma2x2.hat, eps1.hat = eps1.hat, eps01.hat = eps01.hat,
-  eps2.hat = eps2.hat, eps02.hat = eps02.hat)
+            pvalue.Tn2.boot  = pvalue.Tn2.boot,  pvalue.KS.1.boot = pvalue.KS.1.boot,
+            pvalue.KS.2.boot = pvalue.KS.2.boot, pvalue.CM.1.boot = pvalue.CM.1.boot,
+            pvalue.CM.1.asym = pvalue.CM.1.asym, pvalue.CM.2.boot = pvalue.CM.2.boot,
+            x1 = x1, x2 = x2, y1 = y1, y2 = y2, m1x1.hat = m1x1.hat, m0x1.hat = m0x1.hat,
+            m2x2.hat = m2x2.hat, m0x2.hat = m0x2.hat, sigma1x1.hat = sigma1x1.hat,
+            sigma2x2.hat = sigma2x2.hat, eps1.hat = eps1.hat, eps01.hat = eps01.hat,
+            eps2.hat = eps2.hat, eps02.hat = eps02.hat)
 
   class(r) <- c('list', 'comp2condvar')
   return(r)
